@@ -313,84 +313,132 @@
 
             <!-- Back button -->
             <button class="back-btn" id="btn-back-customize">
-                <i class="bi bi-arrow-left"></i> Voltar
+                <i class="bi bi-arrow-left"></i> Voltar ao Início
             </button>
 
-            <section class="page-intro" style="padding-top:8px;">
-                <div class="page-intro-icon care-gradient">
-                    <i class="bi bi-palette-fill"></i>
-                </div>
-                <h2>Personalizar</h2>
-                <p>Deixe sua planta do seu jeito!</p>
-            </section>
-
             <!-- Customize Sub-tabs -->
-            <div class="care-subtabs" id="customize-subtabs">
-                <button class="care-subtab active" data-subtab="customize-look">
-                    <i class="bi bi-palette-fill"></i> Visual
-                </button>
-                <button class="care-subtab" data-subtab="customize-shop">
-                    <i class="bi bi-bag-fill"></i> Loja
-                </button>
+            <div class="customize-tabs-wrapper">
+                <div class="customize-tabs" id="customize-subtabs">
+                    <button class="customize-tab active" data-subtab="customize-look">
+                        <div class="customize-tab-icon"><i class="bi bi-palette-fill"></i></div>
+                        <span>Visual</span>
+                    </button>
+                    <button class="customize-tab" data-subtab="customize-shop">
+                        <div class="customize-tab-icon"><i class="bi bi-bag-fill"></i></div>
+                        <span>Loja</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Sub-tab: Visual -->
             <div class="care-subtab-content active" id="subtab-customize-look">
 
-                <!-- Preview -->
-                <section class="customize-preview">
-                    <div class="customize-preview-frame glass-card">
-                        <div id="customize-preview-svg"></div>
+                <!-- Preview com moldura decorativa -->
+                <section class="customize-preview-section">
+                    <div class="preview-stage">
+                        <div class="preview-glow"></div>
+                        <div class="preview-frame">
+                            <div id="customize-preview-svg"></div>
+                        </div>
+                        <div class="preview-label">
+                            <i class="bi bi-eye-fill"></i> Pré-visualização
+                        </div>
                     </div>
                 </section>
 
-                <!-- Pot Color -->
-                <section class="customize-section">
-                    <h3 class="section-title"><i class="bi bi-paint-bucket"></i> Cor do Vaso</h3>
-                    <div class="color-picker-grid" id="pot-color-picker"></div>
+                <!-- Cor do Vaso -->
+                <section class="picker-section">
+                    <div class="picker-card glass-card">
+                        <div class="picker-header">
+                            <div class="picker-icon-badge" style="background: linear-gradient(135deg, rgba(243,156,18,0.2), rgba(230,126,34,0.08));">
+                                <i class="bi bi-paint-bucket" style="color: #f39c12;"></i>
+                            </div>
+                            <div>
+                                <h3>Cor do Vaso</h3>
+                                <p>Escolha a cor perfeita</p>
+                            </div>
+                        </div>
+                        <div class="color-picker-grid" id="pot-color-picker"></div>
+                    </div>
                 </section>
 
-                <!-- Pot Pattern -->
-                <section class="customize-section">
-                    <h3 class="section-title"><i class="bi bi-grid-3x3"></i> Padrão</h3>
-                    <div class="pattern-picker-grid" id="pot-pattern-picker"></div>
+                <!-- Padrão -->
+                <section class="picker-section">
+                    <div class="picker-card glass-card">
+                        <div class="picker-header">
+                            <div class="picker-icon-badge" style="background: linear-gradient(135deg, rgba(155,89,182,0.2), rgba(142,68,173,0.08));">
+                                <i class="bi bi-grid-3x3" style="color: #9b59b6;"></i>
+                            </div>
+                            <div>
+                                <h3>Padrão</h3>
+                                <p>Estampe seu vaso</p>
+                            </div>
+                        </div>
+                        <div class="pattern-picker-grid" id="pot-pattern-picker"></div>
+                    </div>
                 </section>
 
-                <!-- Accessories -->
-                <section class="customize-section">
-                    <h3 class="section-title"><i class="bi bi-stars"></i> Acessório</h3>
-                    <div class="accessory-picker-grid" id="pot-accessory-picker"></div>
+                <!-- Acessórios -->
+                <section class="picker-section">
+                    <div class="picker-card glass-card">
+                        <div class="picker-header">
+                            <div class="picker-icon-badge" style="background: linear-gradient(135deg, rgba(231,76,60,0.2), rgba(192,57,43,0.08));">
+                                <i class="bi bi-stars" style="color: #e74c3c;"></i>
+                            </div>
+                            <div>
+                                <h3>Acessório</h3>
+                                <p>Adicione estilo</p>
+                            </div>
+                        </div>
+                        <div class="accessory-picker-grid" id="pot-accessory-picker"></div>
+                    </div>
                 </section>
 
-                <!-- Background Scene -->
-                <section class="customize-section">
-                    <h3 class="section-title"><i class="bi bi-image"></i> Cenário</h3>
-                    <div class="scene-picker-grid" id="scene-picker"></div>
+                <!-- Cenário -->
+                <section class="picker-section">
+                    <div class="picker-card glass-card">
+                        <div class="picker-header">
+                            <div class="picker-icon-badge" style="background: linear-gradient(135deg, rgba(52,152,219,0.2), rgba(41,128,185,0.08));">
+                                <i class="bi bi-image" style="color: #3498db;"></i>
+                            </div>
+                            <div>
+                                <h3>Cenário</h3>
+                                <p>Mude o ambiente</p>
+                            </div>
+                        </div>
+                        <div class="scene-picker-grid" id="scene-picker"></div>
+                    </div>
                 </section>
             </div>
 
             <!-- Sub-tab: Shop -->
             <div class="care-subtab-content" id="subtab-customize-shop">
-                <section class="shop-coins-section">
-                    <div class="glass-card shop-coins-card">
-                        <div class="coins-info">
-                            <div class="coins-icon">🪙</div>
-                            <div class="coins-details">
-                                <h4>Suas Moedas</h4>
-                                <div class="coins-value"><span id="shop-coins">0</span> 🌿</div>
+                <section class="shop-wallet-section">
+                    <div class="shop-wallet-card">
+                        <div class="wallet-bg-pattern"></div>
+                        <div class="wallet-content">
+                            <div class="wallet-icon-ring">🪙</div>
+                            <div class="wallet-info">
+                                <span class="wallet-label">Sua Carteira</span>
+                                <div class="wallet-balance"><span id="shop-coins">0</span></div>
+                                <span class="wallet-sub">moedas disponíveis</span>
                             </div>
                         </div>
-                        <div class="coins-hint">Ganhe moedas cuidando da sua planta!</div>
                     </div>
                 </section>
 
                 <section class="shop-section">
-                    <h3 class="section-title"><i class="bi bi-shop"></i> Itens Disponíveis</h3>
+                    <div class="shop-section-header">
+                        <h3><i class="bi bi-shop"></i> Loja de Itens</h3>
+                        <span class="shop-count" id="shop-count"></span>
+                    </div>
                     <div id="shop-items-container"></div>
                 </section>
 
                 <section class="shop-section">
-                    <h3 class="section-title"><i class="bi bi-trophy-fill"></i> Conquistas</h3>
+                    <div class="shop-section-header">
+                        <h3><i class="bi bi-trophy-fill"></i> Conquistas</h3>
+                    </div>
                     <div id="achievements-container"></div>
                 </section>
             </div>
