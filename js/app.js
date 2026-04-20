@@ -568,13 +568,30 @@
     function generateFakeFeed() {
         if (socialPosts.length > 0) return;
         const now = Date.now();
-        const potColors = ['terracotta','ocean','rose','forest','gold','midnight','lavender','snow'];
-        const accs = ['none','sunglasses','bow','crown','hat','none','scarf','flower_deco'];
+        const potColors = Object.keys(PlantAvatar.POT_COLORS);
+        const potPatterns = Object.keys(PlantAvatar.POT_PATTERNS);
+        const accs = Object.keys(PlantAvatar.POT_ACCESSORIES);
+        const plantTypes = Object.keys(PlantAvatar.PLANT_TYPES);
+        
         FAKE_POSTS.forEach((p, i) => {
             const u = FAKE_USERS[i % FAKE_USERS.length];
-            socialPosts.push({ id: 'fake-'+i, username: u.name, emoji: u.emoji, badge: u.badge, text: p.text, mood: p.mood,
-                plantState: i%3===2?'sad':'healthy', potColor: potColors[i%potColors.length], accessory: accs[i%accs.length],
-                likes: Math.floor(Math.random()*30)+5, comments: [], timestamp: now-(i*3600000*(Math.random()*5+1)), isOwn: false });
+            socialPosts.push({ 
+                id: 'fake-'+i, 
+                username: u.name, 
+                emoji: u.emoji, 
+                badge: u.badge, 
+                text: p.text, 
+                mood: p.mood,
+                plantState: i%4===3?'sad':'healthy', 
+                plantType: plantTypes[i % plantTypes.length],
+                potColor: potColors[i % potColors.length], 
+                potPattern: potPatterns[i % potPatterns.length],
+                accessory: accs[i % accs.length],
+                likes: Math.floor(Math.random()*30)+5, 
+                comments: [], 
+                timestamp: now-(i*3600000*(Math.random()*5+1)), 
+                isOwn: false 
+            });
         });
     }
 
@@ -583,7 +600,12 @@
         const sorted = [...socialPosts].sort((a,b) => b.timestamp - a.timestamp);
         DOM.socialFeed.innerHTML = sorted.map(post => {
             const liked = likedPosts[post.id];
-            const svg = PlantAvatar.generateSVG(post.plantState||'healthy', { potColor: post.potColor||'terracotta', potPattern: post.potPattern||'none', accessory: post.accessory||'none' });
+            const svg = PlantAvatar.generateSVG(post.plantState||'healthy', { 
+                plantType: post.plantType || 'fern',
+                potColor: post.potColor || 'terracotta', 
+                potPattern: post.potPattern || 'none', 
+                accessory: post.accessory || 'none' 
+            });
             const comments = post.comments||[];
             return `<div class="post-card"><div class="post-header"><div class="post-avatar">${post.emoji}</div><div class="post-user-info"><div class="post-username">${post.username} ${MOOD_EMOJIS[post.mood]||''}</div><div class="post-time">${getTimeAgo(post.timestamp)}</div></div><span class="post-badge">${post.badge||'🌱'}</span></div><div class="post-plant-preview">${svg}</div><div class="post-text">${post.text}</div><div class="post-stats"><span>${post.likes+(liked?1:0)} curtidas</span><span>${comments.length} comentários</span></div><div class="post-actions"><button class="post-action-btn ${liked?'liked':''}" data-post-id="${post.id}" data-action="like"><i class="bi ${liked?'bi-heart-fill':'bi-heart'}"></i><span>${liked?'Curtido':'Curtir'}</span></button><button class="post-action-btn" data-post-id="${post.id}" data-action="comment"><i class="bi bi-chat"></i><span>Comentar</span></button><button class="post-action-btn" data-post-id="${post.id}" data-action="share"><i class="bi bi-share"></i><span>Compartilhar</span></button></div><div class="post-comments-section" id="comments-${post.id}" style="display:none"><div class="post-comments-list" id="comments-list-${post.id}">${renderComments(comments)}</div><div class="post-comment-input-row"><input type="text" class="post-comment-input" id="comment-input-${post.id}" placeholder="Comentar..."><button class="post-comment-send" data-post-id="${post.id}"><i class="bi bi-send-fill"></i></button></div></div></div>`;
         }).join('');
@@ -603,7 +625,23 @@
         const text = DOM.newPostText.value.trim();
         if (!text) { showToast('📝 Escreva algo!', 'warning'); return; }
         const c = PlantAvatar.getCustomization();
-        socialPosts.unshift({ id: 'user-'+Date.now(), username: PlantData.CONFIG.plantName+' 🌱', emoji: '🌱', badge: 'Você', text, mood: selectedMood, plantState: PlantData.plantState, potColor: c.potColor, potPattern: c.potPattern, accessory: c.accessory, likes: 0, comments: [], timestamp: Date.now(), isOwn: true });
+        socialPosts.unshift({ 
+            id: 'user-'+Date.now(), 
+            username: PlantData.CONFIG.plantName+' 🌱', 
+            emoji: '🌱', 
+            badge: 'Você', 
+            text, 
+            mood: selectedMood, 
+            plantState: PlantData.plantState, 
+            plantType: c.plantType,
+            potColor: c.potColor, 
+            potPattern: c.potPattern, 
+            accessory: c.accessory, 
+            likes: 0, 
+            comments: [], 
+            timestamp: Date.now(), 
+            isOwn: true 
+        });
         DOM.newPostText.value = '';
         coins += 10; updateCoinsDisplay(); renderSocialFeed(); renderAchievements(); saveState();
         showToast('📱 Publicado! +10🪙', 'success');
