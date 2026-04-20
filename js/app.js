@@ -66,6 +66,7 @@
         potPatternPicker: document.getElementById('pot-pattern-picker'),
         potAccessoryPicker: document.getElementById('pot-accessory-picker'),
         scenePicker: document.getElementById('scene-picker'),
+        plantTypePicker: document.getElementById('plant-type-picker'),
 
         // Shop
         shopCoins: document.getElementById('shop-coins'),
@@ -219,6 +220,7 @@
         renderAchievements();
         renderAIPage();
         renderScenePicker();
+        renderPlantTypePicker();
         updateAIQuickTip();
         updateCoinsDisplay();
     }
@@ -411,6 +413,28 @@
             const unlocked = unlockedItems.scenes.includes(key);
             return `<button class="scene-option ${currentScene===key?'selected':''} ${!unlocked?'locked':''}" data-scene="${key}"><span class="scene-emoji">${val.emoji}</span><span class="scene-label">${val.label}</span>${!unlocked?'<span class="scene-lock">🔒</span>':''}</button>`;
         }).join('');
+    }
+
+    function renderPlantTypePicker() {
+        if (!DOM.plantTypePicker) return;
+        const current = PlantAvatar.getCustomization().plantType || 'fern';
+        DOM.plantTypePicker.innerHTML = Object.entries(PlantAvatar.PLANT_TYPES).map(([key, val]) => {
+            return `<button class="plant-type-option ${current===key?'selected':''}" data-plant-type="${key}">
+                <span class="plant-type-emoji">${val.emoji}</span>
+                <span class="plant-type-label">${val.label}</span>
+                <span class="plant-type-desc">${val.desc}</span>
+            </button>`;
+        }).join('');
+    }
+
+    function handlePlantTypeChange(type) {
+        PlantAvatar.setCustomization({ plantType: type });
+        renderPlantTypePicker();
+        updateCustomizePreview();
+        PlantAvatar.render(PlantData.plantState);
+        saveState();
+        const info = PlantAvatar.PLANT_TYPES[type];
+        showToast(`${info.emoji} ${info.label} selecionada!`, 'success');
     }
 
     function updateCustomizePreview() {
@@ -634,7 +658,7 @@
         PlantData.CONFIG.plantName='Samambaia'; PlantData.CONFIG.plantSpecies='Nephrolepis exaltata';
         DOM.settingPlantName.value='Samambaia'; DOM.settingPlantSpecies.value='Nephrolepis exaltata';
         DOM.plantName.textContent='Samambaia'; DOM.plantSpecies.textContent='Nephrolepis exaltata';
-        PlantAvatar.setCustomization({potColor:'terracotta',potPattern:'none',accessory:'none'});
+        PlantAvatar.setCustomization({potColor:'terracotta',potPattern:'none',accessory:'none',plantType:'fern'});
         PlantData.refresh(); renderAll(); renderCustomizationPickers(); updateCustomizePreview();
         generateFakeFeed(); renderSocialFeed(); renderStories(); renderShop(); renderAchievements(); renderAIPage(); renderScenePicker();
         updateCoinsDisplay();
@@ -658,7 +682,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if (page === 'ai') renderAIPage();
         if (page === 'social') { renderSocialFeed(); renderStories(); }
-        if (page === 'customize') { updateCustomizePreview(); renderCustomizationPickers(); renderShop(); renderAchievements(); renderScenePicker(); }
+        if (page === 'customize') { updateCustomizePreview(); renderCustomizationPickers(); renderShop(); renderAchievements(); renderScenePicker(); renderPlantTypePicker(); }
         if (navigator.vibrate) navigator.vibrate(10);
     }
 
@@ -779,6 +803,7 @@
         DOM.potPatternPicker.addEventListener('click', e => { const o = e.target.closest('.pattern-option'); if(o) handlePickerAction('patterns', o.dataset.pattern); });
         DOM.potAccessoryPicker.addEventListener('click', e => { const o = e.target.closest('.accessory-option'); if(o) handlePickerAction('accessories', o.dataset.accessory); });
         if (DOM.scenePicker) DOM.scenePicker.addEventListener('click', e => { const o = e.target.closest('.scene-option'); if(o) handlePickerAction('scenes', o.dataset.scene); });
+        if (DOM.plantTypePicker) DOM.plantTypePicker.addEventListener('click', e => { const o = e.target.closest('.plant-type-option'); if(o) handlePlantTypeChange(o.dataset.plantType); });
 
         // Shop buy
         if (DOM.shopItemsContainer) DOM.shopItemsContainer.addEventListener('click', e => { const b = e.target.closest('.shop-buy-btn'); if(b) handleBuyItem(b.dataset.itemId); });
