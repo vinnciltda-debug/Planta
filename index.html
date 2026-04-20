@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Monitor de Planta Inteligente - Acompanhe a saúde da sua planta em tempo real">
+    <title>🌱 Minha Planta</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Animate.css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Side Menu Overlay -->
+    <div class="menu-overlay" id="menu-overlay"></div>
+
+    <!-- Side Menu Drawer -->
+    <aside class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <div class="menu-plant-icon">🌿</div>
+            <h2>Minha Planta</h2>
+            <p>Monitor Inteligente</p>
+        </div>
+        <nav class="side-menu-nav">
+            <a href="#" class="menu-link active" data-page="home">
+                <i class="bi bi-house-fill"></i>
+                <span>Início</span>
+            </a>
+            <a href="#" class="menu-link" data-page="stats">
+                <i class="bi bi-graph-up"></i>
+                <span>Estatísticas</span>
+            </a>
+            <a href="#" class="menu-link" data-page="care">
+                <i class="bi bi-droplet-fill"></i>
+                <span>Cuidar</span>
+            </a>
+            <a href="#" class="menu-link" data-page="settings">
+                <i class="bi bi-gear-fill"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+        <div class="side-menu-footer">
+            <div class="menu-version">
+                <i class="bi bi-flower1"></i>
+                <span>Planta App v1.0</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-2">
+                    <button class="btn btn-icon" id="btn-menu" aria-label="Menu">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+                <div class="col-8 text-center">
+                    <h1 class="header-title" id="header-title">Minha Planta</h1>
+                </div>
+                <div class="col-2 text-end">
+                    <button class="btn btn-icon" id="btn-refresh" aria-label="Atualizar dados">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================ -->
+    <!--         PAGE: HOME (Início)                  -->
+    <!-- ============================================ -->
+    <main class="app-page active" id="page-home">
+
+        <!-- Plant Status Banner -->
+        <section class="status-banner" id="status-banner">
+            <div class="container">
+                <div class="status-pill" id="status-pill">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                    <span id="status-text">Saudável</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plant Avatar Section -->
+        <section class="plant-avatar-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-10 col-sm-8 col-md-6">
+                        <div class="avatar-container" id="avatar-container">
+                            <!-- Glow effect behind plant -->
+                            <div class="avatar-glow" id="avatar-glow"></div>
+                            <!-- SVG Plant will be injected here by JS -->
+                            <div id="plant-svg-container"></div>
+                            <!-- Plant name -->
+                            <div class="plant-name-tag">
+                                <span id="plant-name">Samambaia</span>
+                                <small id="plant-species">Nephrolepis exaltata</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Health Score -->
+        <section class="health-score-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-10 col-sm-8">
+                        <div class="health-card glass-card">
+                            <div class="health-ring-container">
+                                <svg class="health-ring" viewBox="0 0 120 120" id="health-ring-svg">
+                                    <circle class="health-ring-bg" cx="60" cy="60" r="52" />
+                                    <circle class="health-ring-fill" cx="60" cy="60" r="52" id="health-ring-fill" />
+                                </svg>
+                                <div class="health-ring-value">
+                                    <span id="health-score">85</span>
+                                    <small>%</small>
+                                </div>
+                            </div>
+                            <div class="health-label">
+                                <h2>Saúde Geral</h2>
+                                <p id="health-message">Sua planta está muito bem!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Cards Section -->
+        <section class="data-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="bi bi-bar-chart-line-fill"></i> Dados da Planta</h2>
+                    <small class="text-muted" id="last-update">Atualizado agora</small>
+                </div>
+                <div class="row g-3" id="data-cards-container">
+                    <!-- Cards will be injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Weekly Chart Section -->
+        <section class="chart-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="glass-card chart-card">
+                            <h3><i class="bi bi-graph-up"></i> Histórico Semanal</h3>
+                            <div class="chart-tabs">
+                                <button class="chart-tab active" data-metric="humidity">Umidade</button>
+                                <button class="chart-tab" data-metric="temperature">Temp.</button>
+                                <button class="chart-tab" data-metric="light">Luz</button>
+                            </div>
+                            <div class="mini-chart" id="mini-chart">
+                                <!-- Chart bars injected by JS -->
+                            </div>
+                            <div class="chart-labels" id="chart-labels">
+                                <!-- Day labels injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tips Section -->
+        <section class="tips-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="glass-card tips-card" id="tips-card">
+                            <div class="tip-icon">
+                                <i class="bi bi-lightbulb-fill"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h4>Dica do Dia</h4>
+                                <p id="tip-text">Carregando dica...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ============================================ -->
+    <!--         PAGE: STATS (Dados)                  -->
+    <!-- ============================================ -->
+    <main class="app-page" id="page-stats">
+        <div class="container">
+
+            <!-- Stats Header -->
+            <section class="page-intro">
+                <div class="page-intro-icon stats-gradient">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                </div>
+                <h2>Estatísticas</h2>
+                <p>Análise detalhada dos sensores</p>
+            </section>
+
+            <!-- Summary Cards Row -->
+            <section class="stats-summary">
+                <div class="row g-3">
+                    <div class="col-4">
+                        <div class="glass-card stats-mini-card">
+                            <div class="mini-card-value" id="stats-avg-health">--</div>
+                            <div class="mini-card-label">Saúde Média</div>
+                            <div class="mini-card-icon"><i class="bi bi-heart-pulse"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="glass-card stats-mini-card">
+                            <div class="mini-card-value" id="stats-best-metric">--</div>
+                            <div class="mini-card-label">Melhor</div>
+                            <div class="mini-card-icon"><i class="bi bi-trophy"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="glass-card stats-mini-card">
+                            <div class="mini-card-value" id="stats-alerts">0</div>
+                            <div class="mini-card-label">Alertas</div>
+                            <div class="mini-card-icon"><i class="bi bi-exclamation-triangle"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Detailed Metrics -->
+            <section class="stats-detail-section">
+                <h3 class="section-title"><i class="bi bi-activity"></i> Detalhes dos Sensores</h3>
+                <div id="stats-detail-list">
+                    <!-- Injected by JS -->
+                </div>
+            </section>
+
+            <!-- Full Chart -->
+            <section class="stats-chart-section">
+                <div class="glass-card chart-card">
+                    <h3><i class="bi bi-graph-up-arrow"></i> Tendência Semanal</h3>
+                    <div class="chart-tabs">
+                        <button class="chart-tab-stats active" data-metric="humidity">Umidade</button>
+                        <button class="chart-tab-stats" data-metric="temperature">Temp.</button>
+                        <button class="chart-tab-stats" data-metric="light">Luz</button>
+                    </div>
+                    <div class="stats-chart-area">
+                        <div class="stats-chart-y-labels" id="stats-chart-y"></div>
+                        <div class="stats-chart-bars">
+                            <div class="mini-chart" id="stats-mini-chart"></div>
+                            <div class="chart-labels" id="stats-chart-labels"></div>
+                        </div>
+                    </div>
+                    <div class="stats-chart-legend" id="stats-chart-legend">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+
+    <!-- ============================================ -->
+    <!--         PAGE: CARE (Cuidar)                  -->
+    <!-- ============================================ -->
+    <main class="app-page" id="page-care">
+        <div class="container">
+
+            <!-- Care Header -->
+            <section class="page-intro">
+                <div class="page-intro-icon care-gradient">
+                    <i class="bi bi-droplet-fill"></i>
+                </div>
+                <h2>Cuidar</h2>
+                <p>Ações de cuidado para sua planta</p>
+            </section>
+
+            <!-- Care Actions -->
+            <section class="care-actions" id="care-actions">
+                <div class="row g-3">
+                    <!-- Water -->
+                    <div class="col-6">
+                        <button class="glass-card care-action-card" id="care-water" data-action="water">
+                            <div class="care-icon water-icon">
+                                <i class="bi bi-droplet-fill"></i>
+                            </div>
+                            <span class="care-label">Regar</span>
+                            <small class="care-sub" id="water-last">Nunca regada</small>
+                        </button>
+                    </div>
+                    <!-- Fertilize -->
+                    <div class="col-6">
+                        <button class="glass-card care-action-card" id="care-fertilize" data-action="fertilize">
+                            <div class="care-icon fertilize-icon">
+                                <i class="bi bi-flower2"></i>
+                            </div>
+                            <span class="care-label">Adubar</span>
+                            <small class="care-sub" id="fertilize-last">Nunca adubada</small>
+                        </button>
+                    </div>
+                    <!-- Rotate -->
+                    <div class="col-6">
+                        <button class="glass-card care-action-card" id="care-rotate" data-action="rotate">
+                            <div class="care-icon rotate-icon">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </div>
+                            <span class="care-label">Girar Vaso</span>
+                            <small class="care-sub" id="rotate-last">Nunca girada</small>
+                        </button>
+                    </div>
+                    <!-- Prune -->
+                    <div class="col-6">
+                        <button class="glass-card care-action-card" id="care-prune" data-action="prune">
+                            <div class="care-icon prune-icon">
+                                <i class="bi bi-scissors"></i>
+                            </div>
+                            <span class="care-label">Podar</span>
+                            <small class="care-sub" id="prune-last">Nunca podada</small>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Care Log / History -->
+            <section class="care-log-section">
+                <h3 class="section-title"><i class="bi bi-clock-history"></i> Histórico de Cuidados</h3>
+                <div class="care-log" id="care-log">
+                    <div class="care-log-empty">
+                        <i class="bi bi-journal-text"></i>
+                        <p>Nenhum cuidado registrado ainda.<br>Use os botões acima para começar!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Care Streak -->
+            <section class="care-streak-section">
+                <div class="glass-card care-streak-card">
+                    <div class="streak-fire">
+                        <i class="bi bi-fire"></i>
+                    </div>
+                    <div class="streak-info">
+                        <h4>Sequência de Cuidados</h4>
+                        <div class="streak-value"><span id="care-streak">0</span> dias</div>
+                    </div>
+                    <div class="streak-calendar" id="streak-calendar">
+                        <!-- 7-day calendar injected by JS -->
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+
+    <!-- ============================================ -->
+    <!--         PAGE: SETTINGS (Config)              -->
+    <!-- ============================================ -->
+    <main class="app-page" id="page-settings">
+        <div class="container">
+
+            <!-- Settings Header -->
+            <section class="page-intro">
+                <div class="page-intro-icon settings-gradient">
+                    <i class="bi bi-gear-fill"></i>
+                </div>
+                <h2>Configurações</h2>
+                <p>Personalize o seu aplicativo</p>
+            </section>
+
+            <!-- Plant Info Card -->
+            <section class="settings-section">
+                <h3 class="section-title"><i class="bi bi-flower1"></i> Informações da Planta</h3>
+                <div class="glass-card settings-card">
+                    <div class="setting-item">
+                        <label for="setting-plant-name">Nome da planta</label>
+                        <input type="text" id="setting-plant-name" class="setting-input" value="Samambaia" placeholder="Nome da planta">
+                    </div>
+                    <div class="setting-item">
+                        <label for="setting-plant-species">Espécie</label>
+                        <input type="text" id="setting-plant-species" class="setting-input" value="Nephrolepis exaltata" placeholder="Espécie">
+                    </div>
+                    <button class="btn-save" id="btn-save-plant-info">
+                        <i class="bi bi-check-lg"></i> Salvar
+                    </button>
+                </div>
+            </section>
+
+            <!-- Notification Settings -->
+            <section class="settings-section">
+                <h3 class="section-title"><i class="bi bi-bell"></i> Notificações</h3>
+                <div class="glass-card settings-card">
+                    <div class="setting-toggle-item">
+                        <div class="toggle-info">
+                            <span>Alertas de rega</span>
+                            <small>Lembrete para regar sua planta</small>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="setting-water-alert" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-toggle-item">
+                        <div class="toggle-info">
+                            <span>Alertas de saúde</span>
+                            <small>Notificar quando a saúde cair</small>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="setting-health-alert" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-toggle-item">
+                        <div class="toggle-info">
+                            <span>Dica do dia</span>
+                            <small>Receber dicas diárias</small>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="setting-tip-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Display Settings -->
+            <section class="settings-section">
+                <h3 class="section-title"><i class="bi bi-palette"></i> Aparência</h3>
+                <div class="glass-card settings-card">
+                    <div class="setting-toggle-item">
+                        <div class="toggle-info">
+                            <span>Animações</span>
+                            <small>Animações do avatar e UI</small>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="setting-animations" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label for="setting-refresh-rate">Atualização automática</label>
+                        <select id="setting-refresh-rate" class="setting-select">
+                            <option value="15000">A cada 15s</option>
+                            <option value="30000" selected>A cada 30s</option>
+                            <option value="60000">A cada 1 min</option>
+                            <option value="0">Desligado</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About / Reset -->
+            <section class="settings-section">
+                <h3 class="section-title"><i class="bi bi-info-circle"></i> Sobre</h3>
+                <div class="glass-card settings-card">
+                    <div class="about-info">
+                        <p><strong>Planta App</strong> v1.0</p>
+                        <p>Monitore e cuide da sua planta virtual com dados simulados em tempo real.</p>
+                    </div>
+                    <button class="btn-danger" id="btn-reset-data">
+                        <i class="bi bi-arrow-counterclockwise"></i> Resetar Dados
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="container">
+            <div class="row">
+                <div class="col-3">
+                    <button class="nav-item active" data-page="home" id="nav-home">
+                        <i class="bi bi-house-fill"></i>
+                        <span>Início</span>
+                    </button>
+                </div>
+                <div class="col-3">
+                    <button class="nav-item" data-page="stats" id="nav-stats">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Dados</span>
+                    </button>
+                </div>
+                <div class="col-3">
+                    <button class="nav-item" data-page="care" id="nav-care">
+                        <i class="bi bi-droplet-fill"></i>
+                        <span>Cuidar</span>
+                    </button>
+                </div>
+                <div class="col-3">
+                    <button class="nav-item" data-page="settings" id="nav-settings">
+                        <i class="bi bi-gear-fill"></i>
+                        <span>Config</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- App Scripts (order matters) -->
+    <script src="js/plant-data.js"></script>
+    <script src="js/plant-avatar.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
