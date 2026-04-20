@@ -59,7 +59,7 @@
         btnResetData: document.getElementById('btn-reset-data'),
 
         // Customization page
-        customizeSubtabs: document.querySelectorAll('#customize-subtabs .care-subtab'),
+        customizeSubtabs: document.querySelectorAll('#customize-subtabs .customize-tab'),
         customizeSubtabContents: document.querySelectorAll('#page-customize .care-subtab-content'),
         customizePreviewSvg: document.getElementById('customize-preview-svg'),
         potColorPicker: document.getElementById('pot-color-picker'),
