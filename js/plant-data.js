@@ -1,6 +1,7 @@
 /* ============================================
    PLANT DATA MODULE
    Manages fictitious plant sensor data
+   with smart diagnostics and species-specific tips
    ============================================ */
 
 const PlantData = (function () {
@@ -91,7 +92,7 @@ const PlantData = (function () {
     // ---- Day labels ----
     const DAY_LABELS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-    // ---- Tips ----
+    // ---- General Tips ----
     const TIPS = {
         healthy: [
             'Sua planta está adorando o ambiente atual! Continue assim. 🌿',
@@ -116,19 +117,73 @@ const PlantData = (function () {
         ],
     };
 
+    // ---- Smart Diagnostic Tips (per metric + direction) ----
+    const SMART_TIPS = {
+        humidity: {
+            low: [
+                { title: 'Solo Seco Detectado', tip: 'O solo da sua Samambaia está muito seco! Regue abundantemente e coloque um prato com água embaixo do vaso.', icon: 'bi-droplet-fill', severity: 'danger' },
+                { title: 'Rega Urgente', tip: 'Samambaias precisam de solo constantemente úmido. Regue agora e considere aumentar a frequência para 2-3 vezes por semana.', icon: 'bi-exclamation-circle', severity: 'danger' },
+            ],
+            high: [
+                { title: 'Solo Encharcado', tip: 'Cuidado! Solo muito úmido pode causar apodrecimento das raízes. Reduza a rega e verifique se o vaso tem furos de drenagem.', icon: 'bi-droplet-fill', severity: 'warning' },
+                { title: 'Excesso de Água', tip: 'Deixe o solo secar levemente entre as regas. Samambaias gostam de umidade, mas não de solo encharcado.', icon: 'bi-moisture', severity: 'warning' },
+            ],
+        },
+        temperature: {
+            low: [
+                { title: 'Temperatura Baixa', tip: 'Sua Samambaia está com frio! Mova-a para longe de janelas com corrente de ar e mantenha acima de 18°C.', icon: 'bi-thermometer-snow', severity: 'danger' },
+                { title: 'Proteção Contra Frio', tip: 'Samambaias são tropicais e não toleram temperaturas abaixo de 12°C. Leve-a para um ambiente mais quente.', icon: 'bi-shield-exclamation', severity: 'warning' },
+            ],
+            high: [
+                { title: 'Calor Excessivo', tip: 'A temperatura está muito alta! Mova a planta para um local mais fresco e borrife água nas folhas para refrescar.', icon: 'bi-thermometer-sun', severity: 'danger' },
+                { title: 'Estresse Térmico', tip: 'Samambaias preferem temperaturas entre 18-28°C. Evite exposição direta ao sol forte e fontes de calor.', icon: 'bi-sun-fill', severity: 'warning' },
+            ],
+        },
+        light: {
+            low: [
+                { title: 'Pouca Luz', tip: 'Sua Samambaia está recebendo pouca luz! Mova para um local com luz indireta brilhante, como perto de uma janela com cortina.', icon: 'bi-brightness-low', severity: 'warning' },
+                { title: 'Luz Insuficiente', tip: 'Sem luz adequada, sua planta vai enfraquecer. Samambaias precisam de luz indireta durante pelo menos 6 horas por dia.', icon: 'bi-lamp', severity: 'danger' },
+            ],
+            high: [
+                { title: 'Luz Muito Forte', tip: 'A Samambaia está recebendo sol direto! Isso pode queimar as folhas. Mova para luz filtrada ou sombra parcial.', icon: 'bi-brightness-high', severity: 'danger' },
+                { title: 'Queimadura Solar', tip: 'Folhas amareladas ou com manchas marrons podem indicar queimadura solar. Retire do sol direto imediatamente.', icon: 'bi-sun-fill', severity: 'warning' },
+            ],
+        },
+        soilPH: {
+            low: [
+                { title: 'Solo Muito Ácido', tip: 'O pH do solo está muito baixo. Adicione um pouco de calcário dolomítico para elevar o pH gradualmente. Ideal: 5.5-6.5', icon: 'bi-moisture', severity: 'warning' },
+            ],
+            high: [
+                { title: 'Solo Muito Alcalino', tip: 'O pH do solo está muito alto para samambaias. Adicione turfa ou substrato ácido para reduzir o pH. Ideal: 5.5-6.5', icon: 'bi-moisture', severity: 'warning' },
+            ],
+        },
+        waterLevel: {
+            low: [
+                { title: 'Reserva de Água Baixa', tip: 'O nível de água está muito baixo! Complete a reserva de água do vaso e verifique se o substrato está absorvendo corretamente.', icon: 'bi-water', severity: 'danger' },
+            ],
+            high: [
+                { title: 'Excesso no Reservatório', tip: 'O reservatório de água está transbordando. Esvazie um pouco para evitar que as raízes fiquem submersas.', icon: 'bi-water', severity: 'warning' },
+            ],
+        },
+        airHumidity: {
+            low: [
+                { title: 'Ar Muito Seco', tip: 'Samambaias adoram umidade no ar! Borrife água nas folhas diariamente ou coloque um umidificador perto da planta.', icon: 'bi-cloud-drizzle', severity: 'warning' },
+                { title: 'Umidade do Ar Crítica', tip: 'O ar está seco demais. Monte uma "bandeja de umidade" com pedras e água embaixo do vaso para aumentar a umidade naturalmente.', icon: 'bi-cloud', severity: 'danger' },
+            ],
+            high: [
+                { title: 'Umidade do Ar Alta Demais', tip: 'Umidade excessiva pode favorecer fungos. Melhore a ventilação do ambiente sem expor a planta a correntes de ar diretas.', icon: 'bi-wind', severity: 'warning' },
+            ],
+        },
+    };
+
+
     // ---- Helper Functions ----
 
-    /**
-     * Generate a random value between min and max
-     */
     function randomBetween(min, max, decimals = 0) {
         const value = Math.random() * (max - min) + min;
         return parseFloat(value.toFixed(decimals));
     }
 
-    /**
-     * Evaluate a single metric and return status
-     */
     function evaluateMetric(key, value) {
         const m = METRICS[key];
         if (value >= m.idealMin && value <= m.idealMax) return 'good';
@@ -136,17 +191,11 @@ const PlantData = (function () {
         return 'danger';
     }
 
-    /**
-     * Calculate the percentage of a value within its total range
-     */
     function getPercentage(key, value) {
         const m = METRICS[key];
         return Math.min(100, Math.max(0, ((value - m.min) / (m.max - m.min)) * 100));
     }
 
-    /**
-     * Generate a full set of sensor data (either healthy-biased or random)
-     */
     function generateSensorData(mode = 'mixed') {
         const data = {};
 
@@ -155,10 +204,8 @@ const PlantData = (function () {
             let value;
 
             if (mode === 'healthy') {
-                // Values within ideal range
                 value = randomBetween(m.idealMin, m.idealMax, key === 'soilPH' ? 1 : 0);
             } else if (mode === 'sad') {
-                // Values in warning range
                 const useHigh = Math.random() > 0.5;
                 if (useHigh) {
                     value = randomBetween(m.idealMax, m.warningMax, key === 'soilPH' ? 1 : 0);
@@ -166,7 +213,6 @@ const PlantData = (function () {
                     value = randomBetween(m.warningMin, m.idealMin, key === 'soilPH' ? 1 : 0);
                 }
             } else if (mode === 'critical') {
-                // Values outside warning range
                 const useHigh = Math.random() > 0.5;
                 if (useHigh) {
                     value = randomBetween(m.warningMax, m.max, key === 'soilPH' ? 1 : 0);
@@ -174,7 +220,6 @@ const PlantData = (function () {
                     value = randomBetween(m.min, m.warningMin, key === 'soilPH' ? 1 : 0);
                 }
             } else {
-                // Mixed — 60% healthy, 25% warning, 15% critical
                 const roll = Math.random();
                 if (roll < 0.60) {
                     value = randomBetween(m.idealMin, m.idealMax, key === 'soilPH' ? 1 : 0);
@@ -206,9 +251,6 @@ const PlantData = (function () {
         return data;
     }
 
-    /**
-     * Calculate overall health score from current data
-     */
     function calculateHealthScore(data) {
         let totalScore = 0;
         let count = 0;
@@ -224,18 +266,12 @@ const PlantData = (function () {
         return Math.round(totalScore / count);
     }
 
-    /**
-     * Determine plant state from health score
-     */
     function determinePlantState(score) {
         if (score >= 70) return 'healthy';
         if (score >= 40) return 'sad';
         return 'critical';
     }
 
-    /**
-     * Generate weekly history for charts
-     */
     function generateWeeklyHistory() {
         const history = {
             humidity: [],
@@ -252,30 +288,56 @@ const PlantData = (function () {
         return history;
     }
 
-    /**
-     * Get a random tip based on plant state
-     */
     function getRandomTip(state) {
         const tips = TIPS[state] || TIPS.healthy;
         return tips[Math.floor(Math.random() * tips.length)];
     }
 
+    /**
+     * Get smart diagnostic tips based on current data
+     * Returns array of { title, tip, icon, severity, metric }
+     */
+    function getSmartDiagnostics() {
+        const diagnostics = [];
+
+        Object.keys(currentData).forEach(key => {
+            const d = currentData[key];
+            const m = METRICS[key];
+
+            if (d.status === 'good') return;
+
+            // Determine direction
+            const isLow = d.value < m.idealMin;
+            const direction = isLow ? 'low' : 'high';
+
+            const tips = SMART_TIPS[key]?.[direction];
+            if (tips && tips.length > 0) {
+                const tip = tips[Math.floor(Math.random() * tips.length)];
+                diagnostics.push({
+                    ...tip,
+                    metric: key,
+                    metricLabel: d.label,
+                    currentValue: d.value,
+                    unit: d.unit,
+                    idealRange: `${m.idealMin}–${m.idealMax}${d.unit}`,
+                    status: d.status,
+                });
+            }
+        });
+
+        return diagnostics;
+    }
+
 
     // ---- Public API ----
 
-    /**
-     * Initialize data
-     */
     function init() {
-        currentData = generateSensorData('mixed');
-        healthScore = calculateHealthScore(currentData);
-        plantState = determinePlantState(healthScore);
+        currentData = generateSensorData('healthy');
+        healthScore = 100;
+        plantState = 'healthy';
         weeklyHistory = generateWeeklyHistory();
     }
 
-    /**
-     * Refresh with new random data
-     */
     function refresh(mode) {
         mode = mode || 'mixed';
         currentData = generateSensorData(mode);
@@ -284,9 +346,6 @@ const PlantData = (function () {
         weeklyHistory = generateWeeklyHistory();
     }
 
-    /**
-     * Force a specific state for testing
-     */
     function forceState(state) {
         if (state === 'healthy') {
             refresh('healthy');
@@ -301,11 +360,13 @@ const PlantData = (function () {
         CONFIG,
         METRICS,
         DAY_LABELS,
+        SMART_TIPS,
         get currentData() { return currentData; },
         get healthScore() { return healthScore; },
         get plantState() { return plantState; },
         get weeklyHistory() { return weeklyHistory; },
         getRandomTip,
+        getSmartDiagnostics,
         evaluateMetric,
         getPercentage,
         init,
