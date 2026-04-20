@@ -126,14 +126,14 @@
     };
 
     const SCENES = {
-        'default': { label: 'Padrão', emoji: '🏠', price: 0 },
-        'garden':  { label: 'Jardim', emoji: '🌳', price: 30 },
-        'beach':   { label: 'Praia',  emoji: '🏖️', price: 40 },
-        'night':   { label: 'Noite',  emoji: '🌙', price: 25 },
-        'rainbow': { label: 'Arco-íris', emoji: '🌈', price: 35 },
-        'snow':    { label: 'Neve',   emoji: '❄️', price: 45 },
-        'space':   { label: 'Espaço', emoji: '🚀', price: 60 },
-        'cherry':  { label: 'Cerejeira', emoji: '🌸', price: 50 },
+        'default': { label: 'Padrão',     emoji: '🏠', price: 0,  bg: 'linear-gradient(165deg, #0a1a0f 0%, #0d2818 40%, #122d1b 100%)', glow: 'rgba(46, 204, 113, 0.15)' },
+        'garden':  { label: 'Jardim',     emoji: '🌳', price: 30, bg: 'linear-gradient(165deg, #0b2010 0%, #163d20 40%, #1e5a2e 100%)', glow: 'rgba(30, 180, 80, 0.2)' },
+        'beach':   { label: 'Praia',      emoji: '🏖️', price: 40, bg: 'linear-gradient(165deg, #0d1f2d 0%, #1a3a50 40%, #2a5a6a 100%)', glow: 'rgba(52, 152, 219, 0.2)' },
+        'night':   { label: 'Noite',      emoji: '🌙', price: 25, bg: 'linear-gradient(165deg, #05050f 0%, #0a0a1e 40%, #111130 100%)', glow: 'rgba(100, 100, 200, 0.15)' },
+        'rainbow': { label: 'Arco-íris',  emoji: '🌈', price: 35, bg: 'linear-gradient(165deg, #1a0a20 0%, #201530 40%, #182040 100%)', glow: 'rgba(180, 100, 255, 0.15)' },
+        'snow':    { label: 'Neve',       emoji: '❄️', price: 45, bg: 'linear-gradient(165deg, #151b22 0%, #1e2a35 40%, #283848 100%)', glow: 'rgba(180, 210, 240, 0.15)' },
+        'space':   { label: 'Espaço',     emoji: '🚀', price: 60, bg: 'linear-gradient(165deg, #020208 0%, #080818 40%, #0a0a25 100%)', glow: 'rgba(120, 80, 220, 0.2)' },
+        'cherry':  { label: 'Cerejeira',  emoji: '🌸', price: 50, bg: 'linear-gradient(165deg, #1a0a15 0%, #2d1525 40%, #3a1a30 100%)', glow: 'rgba(255, 130, 180, 0.15)' },
     };
 
     const SHOP_ITEMS = [
@@ -273,6 +273,19 @@
         updateTimestamp();
         animateCards();
         updateAIQuickTip();
+        applyScene();
+    }
+
+    function applyScene() {
+        const s = SCENES[currentScene] || SCENES['default'];
+        document.body.style.background = s.bg;
+        document.body.setAttribute('data-scene', currentScene);
+        // Update avatar glow color
+        const glowEl = document.querySelector('.avatar-glow');
+        if (glowEl) glowEl.style.background = 'radial-gradient(circle, ' + s.glow + ' 0%, transparent 70%)';
+        // Update preview glow too
+        const previewGlow = document.querySelector('.preview-glow');
+        if (previewGlow) previewGlow.style.background = 'radial-gradient(circle, ' + s.glow + ' 0%, transparent 70%)';
     }
 
     function renderStatus(state) {
@@ -410,7 +423,7 @@
         if (type === 'colors') update.potColor = key;
         if (type === 'patterns') update.potPattern = key;
         if (type === 'accessories') update.accessory = key;
-        if (type === 'scenes') { currentScene = key; renderScenePicker(); saveState(); showToast(`${SCENES[key].emoji} Cenário: ${SCENES[key].label}!`, 'success'); return; }
+        if (type === 'scenes') { currentScene = key; applyScene(); renderScenePicker(); saveState(); showToast(`${SCENES[key].emoji} Cenário: ${SCENES[key].label}!`, 'success'); return; }
         PlantAvatar.setCustomization(update);
         renderCustomizationPickers(); updateCustomizePreview(); PlantAvatar.render(PlantData.plantState);
         saveState();
