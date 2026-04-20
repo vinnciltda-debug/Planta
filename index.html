@@ -25,39 +25,98 @@
 </head>
 <body>
 
-    <!-- Side Menu Overlay -->
-    <div class="menu-overlay" id="menu-overlay"></div>
+    <!-- Settings Overlay -->
+    <div class="settings-overlay" id="settings-overlay"></div>
 
-    <!-- Side Menu Drawer -->
-    <aside class="side-menu" id="side-menu">
-        <div class="side-menu-header">
-            <div class="menu-plant-icon">🌿</div>
-            <h2>Minha Planta</h2>
-            <p>Monitor Inteligente</p>
+    <!-- Settings Panel (slides from right) -->
+    <aside class="settings-panel" id="settings-panel">
+        <div class="settings-panel-header">
+            <h2><i class="bi bi-gear-fill"></i> Configurações</h2>
+            <button class="btn-close-panel" id="btn-close-settings">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
-        <nav class="side-menu-nav">
-            <a href="#" class="menu-link active" data-page="home">
-                <i class="bi bi-house-fill"></i>
-                <span>Início</span>
-            </a>
-            <a href="#" class="menu-link" data-page="stats">
-                <i class="bi bi-graph-up"></i>
-                <span>Estatísticas</span>
-            </a>
-            <a href="#" class="menu-link" data-page="care">
-                <i class="bi bi-droplet-fill"></i>
-                <span>Cuidar</span>
-            </a>
-            <a href="#" class="menu-link" data-page="settings">
-                <i class="bi bi-gear-fill"></i>
-                <span>Configurações</span>
-            </a>
-        </nav>
-        <div class="side-menu-footer">
-            <div class="menu-version">
-                <i class="bi bi-flower1"></i>
-                <span>Planta App v1.0</span>
-            </div>
+        <div class="settings-panel-body">
+            <section class="settings-section">
+                <h3 class="section-title"><i class="bi bi-flower1"></i> Informações da Planta</h3>
+                <div class="settings-card-inner">
+                    <div class="setting-item">
+                        <label for="setting-plant-name">Nome da planta</label>
+                        <input type="text" id="setting-plant-name" class="setting-input" value="Samambaia" placeholder="Nome da planta">
+                    </div>
+                    <div class="setting-item">
+                        <label for="setting-plant-species">Espécie</label>
+                        <input type="text" id="setting-plant-species" class="setting-input" value="Nephrolepis exaltata" placeholder="Espécie">
+                    </div>
+                    <button class="btn-save" id="btn-save-plant-info">
+                        <i class="bi bi-check-lg"></i> Salvar
+                    </button>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h3 class="section-title"><i class="bi bi-bell"></i> Notificações</h3>
+                <div class="settings-card-inner">
+                    <div class="setting-toggle-item">
+                        <div class="toggle-info">
+                            <span>Alertas de rega</span>
+                            <small>Lembrete para regar</small>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="setting-water-alert" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-toggle-item">
+                        <div class="toggle-info">
+                            <span>Alertas de saúde</span>
+                            <small>Notificar quando cair</small>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="setting-health-alert" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h3 class="section-title"><i class="bi bi-palette"></i> Aparência</h3>
+                <div class="settings-card-inner">
+                    <div class="setting-toggle-item">
+                        <div class="toggle-info">
+                            <span>Animações</span>
+                            <small>Animações do avatar e UI</small>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="setting-animations" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label for="setting-refresh-rate">Atualização automática</label>
+                        <select id="setting-refresh-rate" class="setting-select">
+                            <option value="15000">A cada 15s</option>
+                            <option value="30000" selected>A cada 30s</option>
+                            <option value="60000">A cada 1 min</option>
+                            <option value="0">Desligado</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h3 class="section-title"><i class="bi bi-info-circle"></i> Sobre</h3>
+                <div class="settings-card-inner">
+                    <div class="about-info">
+                        <p><strong>Planta App</strong> v3.0</p>
+                        <p>Monitore e cuide da sua planta virtual com IA, personalização e rede social.</p>
+                    </div>
+                    <button class="btn-danger" id="btn-reset-data">
+                        <i class="bi bi-arrow-counterclockwise"></i> Resetar Dados
+                    </button>
+                </div>
+            </section>
         </div>
     </aside>
 
@@ -66,8 +125,8 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-2">
-                    <button class="btn btn-icon" id="btn-menu" aria-label="Menu">
-                        <i class="bi bi-list"></i>
+                    <button class="btn btn-icon" id="btn-settings" aria-label="Configurações">
+                        <i class="bi bi-gear-fill"></i>
                     </button>
                 </div>
                 <div class="col-8 text-center">
@@ -83,7 +142,7 @@
     </header>
 
     <!-- ============================================ -->
-    <!--         PAGE: HOME (Início)                  -->
+    <!--         PAGE: HOME                           -->
     <!-- ============================================ -->
     <main class="app-page active" id="page-home">
 
@@ -97,17 +156,18 @@
             </div>
         </section>
 
-        <!-- Plant Avatar Section -->
+        <!-- Plant Avatar Section (CLICKABLE → opens customize) -->
         <section class="plant-avatar-section">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-10 col-sm-8 col-md-6">
                         <div class="avatar-container" id="avatar-container">
-                            <!-- Glow effect behind plant -->
                             <div class="avatar-glow" id="avatar-glow"></div>
-                            <!-- SVG Plant will be injected here by JS -->
-                            <div id="plant-svg-container"></div>
-                            <!-- Plant name -->
+                            <div id="plant-svg-container" class="clickable-avatar" role="button" tabindex="0" title="Toque para personalizar">
+                            </div>
+                            <div class="avatar-edit-hint" id="avatar-edit-hint">
+                                <i class="bi bi-palette-fill"></i> Toque para personalizar
+                            </div>
                             <div class="plant-name-tag">
                                 <span id="plant-name">Samambaia</span>
                                 <small id="plant-species">Nephrolepis exaltata</small>
@@ -144,39 +204,87 @@
             </div>
         </section>
 
+        <!-- AI Quick Tip Banner -->
+        <section class="ai-quick-banner">
+            <div class="container">
+                <button class="glass-card ai-banner-card" id="ai-quick-banner-btn">
+                    <div class="ai-banner-avatar">
+                        <div class="ai-avatar-ring"><i class="bi bi-robot"></i></div>
+                    </div>
+                    <div class="ai-banner-content">
+                        <div class="ai-banner-label">
+                            <span class="ai-badge">PlantIA</span>
+                            <span class="ai-badge-beta">AI</span>
+                        </div>
+                        <p id="ai-quick-tip-text">Analisando dados da sua planta...</p>
+                    </div>
+                    <div class="ai-banner-arrow"><i class="bi bi-chevron-right"></i></div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Smart Diagnostics Section -->
+        <section class="diagnostics-section" id="diagnostics-section" style="display:none;">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="bi bi-bandaid-fill"></i> Diagnóstico</h2>
+                    <small class="text-muted">Dicas específicas</small>
+                </div>
+                <div id="diagnostics-container"></div>
+            </div>
+        </section>
+
+        <!-- Care Actions (inline on home) -->
+        <section class="care-actions-home">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="bi bi-hand-thumbs-up-fill"></i> Cuidar</h2>
+                    <div class="coins-badge" id="coins-badge-home">🪙 <span id="coins-display-home">50</span></div>
+                </div>
+                <div class="care-actions-row">
+                    <button class="care-btn-compact" id="care-water" data-action="water">
+                        <div class="care-btn-icon water-icon"><i class="bi bi-droplet-fill"></i></div>
+                        <span>Regar</span>
+                    </button>
+                    <button class="care-btn-compact" id="care-fertilize" data-action="fertilize">
+                        <div class="care-btn-icon fertilize-icon"><i class="bi bi-flower2"></i></div>
+                        <span>Adubar</span>
+                    </button>
+                    <button class="care-btn-compact" id="care-rotate" data-action="rotate">
+                        <div class="care-btn-icon rotate-icon"><i class="bi bi-arrow-repeat"></i></div>
+                        <span>Girar</span>
+                    </button>
+                    <button class="care-btn-compact" id="care-prune" data-action="prune">
+                        <div class="care-btn-icon prune-icon"><i class="bi bi-scissors"></i></div>
+                        <span>Podar</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- Data Cards Section -->
         <section class="data-section">
             <div class="container">
                 <div class="section-header">
-                    <h2><i class="bi bi-bar-chart-line-fill"></i> Dados da Planta</h2>
+                    <h2><i class="bi bi-bar-chart-line-fill"></i> Sensores</h2>
                     <small class="text-muted" id="last-update">Atualizado agora</small>
                 </div>
-                <div class="row g-3" id="data-cards-container">
-                    <!-- Cards will be injected by JS -->
-                </div>
+                <div class="row g-3" id="data-cards-container"></div>
             </div>
         </section>
 
         <!-- Weekly Chart Section -->
         <section class="chart-section">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-12">
-                        <div class="glass-card chart-card">
-                            <h3><i class="bi bi-graph-up"></i> Histórico Semanal</h3>
-                            <div class="chart-tabs">
-                                <button class="chart-tab active" data-metric="humidity">Umidade</button>
-                                <button class="chart-tab" data-metric="temperature">Temp.</button>
-                                <button class="chart-tab" data-metric="light">Luz</button>
-                            </div>
-                            <div class="mini-chart" id="mini-chart">
-                                <!-- Chart bars injected by JS -->
-                            </div>
-                            <div class="chart-labels" id="chart-labels">
-                                <!-- Day labels injected by JS -->
-                            </div>
-                        </div>
+                <div class="glass-card chart-card">
+                    <h3><i class="bi bi-graph-up"></i> Histórico Semanal</h3>
+                    <div class="chart-tabs">
+                        <button class="chart-tab active" data-metric="humidity">Umidade</button>
+                        <button class="chart-tab" data-metric="temperature">Temp.</button>
+                        <button class="chart-tab" data-metric="light">Luz</button>
                     </div>
+                    <div class="mini-chart" id="mini-chart"></div>
+                    <div class="chart-labels" id="chart-labels"></div>
                 </div>
             </div>
         </section>
@@ -184,17 +292,11 @@
         <!-- Tips Section -->
         <section class="tips-section">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-12">
-                        <div class="glass-card tips-card" id="tips-card">
-                            <div class="tip-icon">
-                                <i class="bi bi-lightbulb-fill"></i>
-                            </div>
-                            <div class="tip-content">
-                                <h4>Dica do Dia</h4>
-                                <p id="tip-text">Carregando dica...</p>
-                            </div>
-                        </div>
+                <div class="glass-card tips-card" id="tips-card">
+                    <div class="tip-icon"><i class="bi bi-lightbulb-fill"></i></div>
+                    <div class="tip-content">
+                        <h4>Dica do Dia</h4>
+                        <p id="tip-text">Carregando dica...</p>
                     </div>
                 </div>
             </div>
@@ -204,167 +306,154 @@
 
 
     <!-- ============================================ -->
-    <!--         PAGE: STATS (Dados)                  -->
+    <!--         PAGE: CUSTOMIZE (overlay page)       -->
     <!-- ============================================ -->
-    <main class="app-page" id="page-stats">
+    <main class="app-page" id="page-customize">
         <div class="container">
 
-            <!-- Stats Header -->
-            <section class="page-intro">
-                <div class="page-intro-icon stats-gradient">
-                    <i class="bi bi-bar-chart-line-fill"></i>
-                </div>
-                <h2>Estatísticas</h2>
-                <p>Análise detalhada dos sensores</p>
-            </section>
+            <!-- Back button -->
+            <button class="back-btn" id="btn-back-customize">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </button>
 
-            <!-- Summary Cards Row -->
-            <section class="stats-summary">
-                <div class="row g-3">
-                    <div class="col-4">
-                        <div class="glass-card stats-mini-card">
-                            <div class="mini-card-value" id="stats-avg-health">--</div>
-                            <div class="mini-card-label">Saúde Média</div>
-                            <div class="mini-card-icon"><i class="bi bi-heart-pulse"></i></div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="glass-card stats-mini-card">
-                            <div class="mini-card-value" id="stats-best-metric">--</div>
-                            <div class="mini-card-label">Melhor</div>
-                            <div class="mini-card-icon"><i class="bi bi-trophy"></i></div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="glass-card stats-mini-card">
-                            <div class="mini-card-value" id="stats-alerts">0</div>
-                            <div class="mini-card-label">Alertas</div>
-                            <div class="mini-card-icon"><i class="bi bi-exclamation-triangle"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Detailed Metrics -->
-            <section class="stats-detail-section">
-                <h3 class="section-title"><i class="bi bi-activity"></i> Detalhes dos Sensores</h3>
-                <div id="stats-detail-list">
-                    <!-- Injected by JS -->
-                </div>
-            </section>
-
-            <!-- Full Chart -->
-            <section class="stats-chart-section">
-                <div class="glass-card chart-card">
-                    <h3><i class="bi bi-graph-up-arrow"></i> Tendência Semanal</h3>
-                    <div class="chart-tabs">
-                        <button class="chart-tab-stats active" data-metric="humidity">Umidade</button>
-                        <button class="chart-tab-stats" data-metric="temperature">Temp.</button>
-                        <button class="chart-tab-stats" data-metric="light">Luz</button>
-                    </div>
-                    <div class="stats-chart-area">
-                        <div class="stats-chart-y-labels" id="stats-chart-y"></div>
-                        <div class="stats-chart-bars">
-                            <div class="mini-chart" id="stats-mini-chart"></div>
-                            <div class="chart-labels" id="stats-chart-labels"></div>
-                        </div>
-                    </div>
-                    <div class="stats-chart-legend" id="stats-chart-legend">
-                        <!-- Injected by JS -->
-                    </div>
-                </div>
-            </section>
-
-        </div>
-    </main>
-
-
-    <!-- ============================================ -->
-    <!--         PAGE: CARE (Cuidar)                  -->
-    <!-- ============================================ -->
-    <main class="app-page" id="page-care">
-        <div class="container">
-
-            <!-- Care Header -->
-            <section class="page-intro">
+            <section class="page-intro" style="padding-top:8px;">
                 <div class="page-intro-icon care-gradient">
-                    <i class="bi bi-droplet-fill"></i>
+                    <i class="bi bi-palette-fill"></i>
                 </div>
-                <h2>Cuidar</h2>
-                <p>Ações de cuidado para sua planta</p>
+                <h2>Personalizar</h2>
+                <p>Deixe sua planta do seu jeito!</p>
             </section>
 
-            <!-- Care Actions -->
-            <section class="care-actions" id="care-actions">
-                <div class="row g-3">
-                    <!-- Water -->
-                    <div class="col-6">
-                        <button class="glass-card care-action-card" id="care-water" data-action="water">
-                            <div class="care-icon water-icon">
-                                <i class="bi bi-droplet-fill"></i>
-                            </div>
-                            <span class="care-label">Regar</span>
-                            <small class="care-sub" id="water-last">Nunca regada</small>
-                        </button>
+            <!-- Customize Sub-tabs -->
+            <div class="care-subtabs" id="customize-subtabs">
+                <button class="care-subtab active" data-subtab="customize-look">
+                    <i class="bi bi-palette-fill"></i> Visual
+                </button>
+                <button class="care-subtab" data-subtab="customize-shop">
+                    <i class="bi bi-bag-fill"></i> Loja
+                </button>
+            </div>
+
+            <!-- Sub-tab: Visual -->
+            <div class="care-subtab-content active" id="subtab-customize-look">
+
+                <!-- Preview -->
+                <section class="customize-preview">
+                    <div class="customize-preview-frame glass-card">
+                        <div id="customize-preview-svg"></div>
                     </div>
-                    <!-- Fertilize -->
-                    <div class="col-6">
-                        <button class="glass-card care-action-card" id="care-fertilize" data-action="fertilize">
-                            <div class="care-icon fertilize-icon">
-                                <i class="bi bi-flower2"></i>
+                </section>
+
+                <!-- Pot Color -->
+                <section class="customize-section">
+                    <h3 class="section-title"><i class="bi bi-paint-bucket"></i> Cor do Vaso</h3>
+                    <div class="color-picker-grid" id="pot-color-picker"></div>
+                </section>
+
+                <!-- Pot Pattern -->
+                <section class="customize-section">
+                    <h3 class="section-title"><i class="bi bi-grid-3x3"></i> Padrão</h3>
+                    <div class="pattern-picker-grid" id="pot-pattern-picker"></div>
+                </section>
+
+                <!-- Accessories -->
+                <section class="customize-section">
+                    <h3 class="section-title"><i class="bi bi-stars"></i> Acessório</h3>
+                    <div class="accessory-picker-grid" id="pot-accessory-picker"></div>
+                </section>
+
+                <!-- Background Scene -->
+                <section class="customize-section">
+                    <h3 class="section-title"><i class="bi bi-image"></i> Cenário</h3>
+                    <div class="scene-picker-grid" id="scene-picker"></div>
+                </section>
+            </div>
+
+            <!-- Sub-tab: Shop -->
+            <div class="care-subtab-content" id="subtab-customize-shop">
+                <section class="shop-coins-section">
+                    <div class="glass-card shop-coins-card">
+                        <div class="coins-info">
+                            <div class="coins-icon">🪙</div>
+                            <div class="coins-details">
+                                <h4>Suas Moedas</h4>
+                                <div class="coins-value"><span id="shop-coins">0</span> 🌿</div>
                             </div>
-                            <span class="care-label">Adubar</span>
-                            <small class="care-sub" id="fertilize-last">Nunca adubada</small>
-                        </button>
+                        </div>
+                        <div class="coins-hint">Ganhe moedas cuidando da sua planta!</div>
                     </div>
-                    <!-- Rotate -->
-                    <div class="col-6">
-                        <button class="glass-card care-action-card" id="care-rotate" data-action="rotate">
-                            <div class="care-icon rotate-icon">
-                                <i class="bi bi-arrow-repeat"></i>
-                            </div>
-                            <span class="care-label">Girar Vaso</span>
-                            <small class="care-sub" id="rotate-last">Nunca girada</small>
-                        </button>
+                </section>
+
+                <section class="shop-section">
+                    <h3 class="section-title"><i class="bi bi-shop"></i> Itens Disponíveis</h3>
+                    <div id="shop-items-container"></div>
+                </section>
+
+                <section class="shop-section">
+                    <h3 class="section-title"><i class="bi bi-trophy-fill"></i> Conquistas</h3>
+                    <div id="achievements-container"></div>
+                </section>
+            </div>
+
+        </div>
+    </main>
+
+
+    <!-- ============================================ -->
+    <!--         PAGE: AI (PlantIA Chat)              -->
+    <!-- ============================================ -->
+    <main class="app-page" id="page-ai">
+        <div class="container">
+
+            <section class="page-intro">
+                <div class="page-intro-icon ai-gradient">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <h2>PlantIA</h2>
+                <p>Assistente inteligente de cuidados</p>
+            </section>
+
+            <!-- Species Info Card -->
+            <section class="ai-species-section">
+                <div class="glass-card ai-species-card" id="ai-species-card">
+                    <div class="species-header">
+                        <div class="species-avatar">🌿</div>
+                        <div class="species-info">
+                            <h3 id="ai-species-name">Samambaia</h3>
+                            <span id="ai-species-scientific">Nephrolepis exaltata</span>
+                        </div>
                     </div>
-                    <!-- Prune -->
-                    <div class="col-6">
-                        <button class="glass-card care-action-card" id="care-prune" data-action="prune">
-                            <div class="care-icon prune-icon">
-                                <i class="bi bi-scissors"></i>
-                            </div>
-                            <span class="care-label">Podar</span>
-                            <small class="care-sub" id="prune-last">Nunca podada</small>
-                        </button>
-                    </div>
+                    <div class="species-tags" id="ai-species-tags"></div>
                 </div>
             </section>
 
-            <!-- Care Log / History -->
-            <section class="care-log-section">
-                <h3 class="section-title"><i class="bi bi-clock-history"></i> Histórico de Cuidados</h3>
-                <div class="care-log" id="care-log">
-                    <div class="care-log-empty">
-                        <i class="bi bi-journal-text"></i>
-                        <p>Nenhum cuidado registrado ainda.<br>Use os botões acima para começar!</p>
-                    </div>
+            <!-- Quick Actions -->
+            <section class="ai-quick-actions">
+                <div class="ai-action-scroll">
+                    <button class="ai-action-chip" data-question="Como devo regar minha planta?"><i class="bi bi-droplet"></i> Rega</button>
+                    <button class="ai-action-chip" data-question="Qual a luz ideal?"><i class="bi bi-sun"></i> Luz</button>
+                    <button class="ai-action-chip" data-question="Qual a temperatura ideal?"><i class="bi bi-thermometer-half"></i> Temp</button>
+                    <button class="ai-action-chip" data-question="Como adubar minha planta?"><i class="bi bi-flower2"></i> Adubo</button>
+                    <button class="ai-action-chip" data-question="Quais doenças comuns afetam minha planta?"><i class="bi bi-bug"></i> Doenças</button>
+                    <button class="ai-action-chip" data-question="Qual a umidade ideal do ar?"><i class="bi bi-cloud-drizzle"></i> Umidade</button>
+                    <button class="ai-action-chip" data-question="Minha planta é tóxica para pets?"><i class="bi bi-heart"></i> Pets</button>
                 </div>
             </section>
 
-            <!-- Care Streak -->
-            <section class="care-streak-section">
-                <div class="glass-card care-streak-card">
-                    <div class="streak-fire">
-                        <i class="bi bi-fire"></i>
-                    </div>
-                    <div class="streak-info">
-                        <h4>Sequência de Cuidados</h4>
-                        <div class="streak-value"><span id="care-streak">0</span> dias</div>
-                    </div>
-                    <div class="streak-calendar" id="streak-calendar">
-                        <!-- 7-day calendar injected by JS -->
-                    </div>
+            <!-- Chat Area -->
+            <section class="ai-chat-section">
+                <div class="ai-chat-messages" id="ai-chat-messages"></div>
+            </section>
+
+            <!-- Chat Input -->
+            <section class="ai-chat-input-section">
+                <div class="ai-chat-input-wrapper">
+                    <input type="text" id="ai-chat-input" class="ai-chat-input" placeholder="Pergunte sobre sua planta...">
+                    <button class="ai-send-btn" id="ai-send-btn"><i class="bi bi-send-fill"></i></button>
                 </div>
+                <button class="ai-diagnose-btn" id="ai-diagnose-btn">
+                    <i class="bi bi-clipboard2-pulse-fill"></i> Diagnóstico Completo
+                </button>
             </section>
 
         </div>
@@ -372,114 +461,48 @@
 
 
     <!-- ============================================ -->
-    <!--         PAGE: SETTINGS (Config)              -->
+    <!--         PAGE: SOCIAL                         -->
     <!-- ============================================ -->
-    <main class="app-page" id="page-settings">
+    <main class="app-page" id="page-social">
         <div class="container">
 
-            <!-- Settings Header -->
             <section class="page-intro">
-                <div class="page-intro-icon settings-gradient">
-                    <i class="bi bi-gear-fill"></i>
+                <div class="page-intro-icon social-gradient">
+                    <i class="bi bi-people-fill"></i>
                 </div>
-                <h2>Configurações</h2>
-                <p>Personalize o seu aplicativo</p>
+                <h2>Comunidade</h2>
+                <p>Compartilhe sua planta com o mundo</p>
             </section>
 
-            <!-- Plant Info Card -->
-            <section class="settings-section">
-                <h3 class="section-title"><i class="bi bi-flower1"></i> Informações da Planta</h3>
-                <div class="glass-card settings-card">
-                    <div class="setting-item">
-                        <label for="setting-plant-name">Nome da planta</label>
-                        <input type="text" id="setting-plant-name" class="setting-input" value="Samambaia" placeholder="Nome da planta">
-                    </div>
-                    <div class="setting-item">
-                        <label for="setting-plant-species">Espécie</label>
-                        <input type="text" id="setting-plant-species" class="setting-input" value="Nephrolepis exaltata" placeholder="Espécie">
-                    </div>
-                    <button class="btn-save" id="btn-save-plant-info">
-                        <i class="bi bi-check-lg"></i> Salvar
-                    </button>
-                </div>
+            <!-- Stories -->
+            <section class="social-stories">
+                <div class="stories-scroll" id="stories-scroll"></div>
             </section>
 
-            <!-- Notification Settings -->
-            <section class="settings-section">
-                <h3 class="section-title"><i class="bi bi-bell"></i> Notificações</h3>
-                <div class="glass-card settings-card">
-                    <div class="setting-toggle-item">
-                        <div class="toggle-info">
-                            <span>Alertas de rega</span>
-                            <small>Lembrete para regar sua planta</small>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="setting-water-alert" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
+            <!-- New Post -->
+            <section class="social-new-post">
+                <div class="glass-card new-post-card">
+                    <div class="new-post-header">
+                        <div class="post-avatar-mini">🌱</div>
+                        <input type="text" id="new-post-text" class="new-post-input" placeholder="Como está sua planta hoje?">
                     </div>
-                    <div class="setting-toggle-item">
-                        <div class="toggle-info">
-                            <span>Alertas de saúde</span>
-                            <small>Notificar quando a saúde cair</small>
+                    <div class="new-post-actions-row">
+                        <div class="new-post-mood-selector">
+                            <button class="mood-btn active" data-mood="happy">😊</button>
+                            <button class="mood-btn" data-mood="proud">🤩</button>
+                            <button class="mood-btn" data-mood="worried">😟</button>
+                            <button class="mood-btn" data-mood="question">🤔</button>
+                            <button class="mood-btn" data-mood="celebrate">🥳</button>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="setting-health-alert" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-toggle-item">
-                        <div class="toggle-info">
-                            <span>Dica do dia</span>
-                            <small>Receber dicas diárias</small>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="setting-tip-toggle" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
+                        <button class="btn-post" id="btn-new-post">
+                            <i class="bi bi-send-fill"></i> Publicar
+                        </button>
                     </div>
                 </div>
             </section>
 
-            <!-- Display Settings -->
-            <section class="settings-section">
-                <h3 class="section-title"><i class="bi bi-palette"></i> Aparência</h3>
-                <div class="glass-card settings-card">
-                    <div class="setting-toggle-item">
-                        <div class="toggle-info">
-                            <span>Animações</span>
-                            <small>Animações do avatar e UI</small>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="setting-animations" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <label for="setting-refresh-rate">Atualização automática</label>
-                        <select id="setting-refresh-rate" class="setting-select">
-                            <option value="15000">A cada 15s</option>
-                            <option value="30000" selected>A cada 30s</option>
-                            <option value="60000">A cada 1 min</option>
-                            <option value="0">Desligado</option>
-                        </select>
-                    </div>
-                </div>
-            </section>
-
-            <!-- About / Reset -->
-            <section class="settings-section">
-                <h3 class="section-title"><i class="bi bi-info-circle"></i> Sobre</h3>
-                <div class="glass-card settings-card">
-                    <div class="about-info">
-                        <p><strong>Planta App</strong> v1.0</p>
-                        <p>Monitore e cuide da sua planta virtual com dados simulados em tempo real.</p>
-                    </div>
-                    <button class="btn-danger" id="btn-reset-data">
-                        <i class="bi bi-arrow-counterclockwise"></i> Resetar Dados
-                    </button>
-                </div>
-            </section>
+            <!-- Feed -->
+            <section class="social-feed" id="social-feed"></section>
 
         </div>
     </main>
@@ -487,32 +510,26 @@
     <!-- Toast Notification -->
     <div class="toast-container" id="toast-container"></div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation (3 tabs) -->
     <nav class="bottom-nav">
         <div class="container">
             <div class="row">
-                <div class="col-3">
+                <div class="col">
                     <button class="nav-item active" data-page="home" id="nav-home">
                         <i class="bi bi-house-fill"></i>
                         <span>Início</span>
                     </button>
                 </div>
-                <div class="col-3">
-                    <button class="nav-item" data-page="stats" id="nav-stats">
-                        <i class="bi bi-graph-up"></i>
-                        <span>Dados</span>
+                <div class="col">
+                    <button class="nav-item" data-page="ai" id="nav-ai">
+                        <i class="bi bi-robot"></i>
+                        <span>PlantIA</span>
                     </button>
                 </div>
-                <div class="col-3">
-                    <button class="nav-item" data-page="care" id="nav-care">
-                        <i class="bi bi-droplet-fill"></i>
-                        <span>Cuidar</span>
-                    </button>
-                </div>
-                <div class="col-3">
-                    <button class="nav-item" data-page="settings" id="nav-settings">
-                        <i class="bi bi-gear-fill"></i>
-                        <span>Config</span>
+                <div class="col">
+                    <button class="nav-item" data-page="social" id="nav-social">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Social</span>
                     </button>
                 </div>
             </div>
@@ -522,9 +539,10 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- App Scripts (order matters) -->
+    <!-- App Scripts -->
     <script src="js/plant-data.js"></script>
     <script src="js/plant-avatar.js"></script>
+    <script src="js/ai-tips.js"></script>
     <script src="js/app.js"></script>
 
 </body>
