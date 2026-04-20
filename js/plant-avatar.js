@@ -5,12 +5,12 @@
 const PlantAvatar = (function () {
 
     const PLANT_TYPES = {
-        fern:       { label: 'Samambaia', emoji: '🌿', desc: 'Clássica e elegante' },
-        cactus:     { label: 'Cacto',     emoji: '🌵', desc: 'Resistente e desértico' },
-        succulent:  { label: 'Suculenta', emoji: '🪴', desc: 'Pequena e fofa' },
-        sunflower:  { label: 'Girassol',  emoji: '🌻', desc: 'Alegre e radiante' },
-        tulip:      { label: 'Tulipa',    emoji: '🌷', desc: 'Delicada e colorida' },
-        bonsai:     { label: 'Bonsai',    emoji: '🌳', desc: 'Milenar e sábio' },
+        fern:       { label: 'Samambaia',  emoji: '🌿', desc: 'Clássica e elegante',  scientific: 'Nephrolepis exaltata' },
+        cactus:     { label: 'Cacto',      emoji: '🌵', desc: 'Resistente e desértico', scientific: 'Cereus peruvianus' },
+        succulent:  { label: 'Suculenta',  emoji: '🪴', desc: 'Pequena e fofa',       scientific: 'Echeveria elegans' },
+        sunflower:  { label: 'Girassol',   emoji: '🌻', desc: 'Alegre e radiante',    scientific: 'Helianthus annuus' },
+        tulip:      { label: 'Tulipa',     emoji: '🌷', desc: 'Delicada e colorida',  scientific: 'Tulipa gesneriana' },
+        bonsai:     { label: 'Bonsai',     emoji: '🌳', desc: 'Milenar e sábio',       scientific: 'Juniperus procumbens' },
     };
 
     const PALETTES = {
