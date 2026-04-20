@@ -1,6 +1,7 @@
 /* ============================================
    PLANT AVATAR MODULE
    Generates and manages the SVG plant avatar
+   with customizable pot options
    ============================================ */
 
 const PlantAvatar = (function () {
@@ -12,9 +13,6 @@ const PlantAvatar = (function () {
             leafDark: '#27ae60',
             leafLight: '#82e0aa',
             stem: '#1e8449',
-            pot: '#a0522d',
-            potDark: '#8b4513',
-            potHighlight: '#cd853f',
             soil: '#5d4037',
             soilLight: '#795548',
             face: '#196f3d',
@@ -28,9 +26,6 @@ const PlantAvatar = (function () {
             leafDark: '#8a9a5b',
             leafLight: '#c5d19a',
             stem: '#7d8a5c',
-            pot: '#a0522d',
-            potDark: '#8b4513',
-            potHighlight: '#cd853f',
             soil: '#5d4037',
             soilLight: '#6d5047',
             face: '#6d7a4f',
@@ -44,9 +39,6 @@ const PlantAvatar = (function () {
             leafDark: '#6d6244',
             leafLight: '#a89870',
             stem: '#6d6244',
-            pot: '#a0522d',
-            potDark: '#8b4513',
-            potHighlight: '#cd853f',
             soil: '#4a3530',
             soilLight: '#5a4038',
             face: '#5a4d3a',
@@ -57,11 +49,194 @@ const PlantAvatar = (function () {
         },
     };
 
+    // ---- Pot Customization Options ----
+    const POT_COLORS = {
+        terracotta: { main: '#a0522d', dark: '#8b4513', highlight: '#cd853f', label: 'Terracota' },
+        ocean: { main: '#2980b9', dark: '#1a5276', highlight: '#5dade2', label: 'Oceano' },
+        rose: { main: '#e91e63', dark: '#ad1457', highlight: '#f48fb1', label: 'Rosa' },
+        forest: { main: '#27ae60', dark: '#1e8449', highlight: '#82e0aa', label: 'Floresta' },
+        snow: { main: '#ecf0f1', dark: '#bdc3c7', highlight: '#ffffff', label: 'Neve' },
+        midnight: { main: '#2c3e50', dark: '#1a252f', highlight: '#4a6fa5', label: 'Meia-Noite' },
+        gold: { main: '#f39c12', dark: '#d68910', highlight: '#f9e79f', label: 'Ouro' },
+        lavender: { main: '#9b59b6', dark: '#7d3c98', highlight: '#d2b4de', label: 'Lavanda' },
+    };
+
+    const POT_PATTERNS = {
+        none: { label: 'Liso' },
+        stripes: { label: 'Listras' },
+        dots: { label: 'Bolinhas' },
+        hearts: { label: 'Corações' },
+        zigzag: { label: 'Zigzag' },
+        stars: { label: 'Estrelas' },
+    };
+
+    const POT_ACCESSORIES = {
+        none: { label: 'Nenhum' },
+        bow: { label: 'Laço', emoji: '🎀' },
+        sunglasses: { label: 'Óculos', emoji: '😎' },
+        hat: { label: 'Chapéu', emoji: '🎩' },
+        crown: { label: 'Coroa', emoji: '👑' },
+        scarf: { label: 'Cachecol', emoji: '🧣' },
+        flower_deco: { label: 'Flor', emoji: '🌺' },
+    };
+
+    // Current customization state
+    let currentCustom = {
+        potColor: 'terracotta',
+        potPattern: 'none',
+        accessory: 'none',
+    };
+
+    function setCustomization(opts) {
+        if (opts.potColor) currentCustom.potColor = opts.potColor;
+        if (opts.potPattern) currentCustom.potPattern = opts.potPattern;
+        if (opts.accessory !== undefined) currentCustom.accessory = opts.accessory;
+    }
+
+    function getCustomization() {
+        return { ...currentCustom };
+    }
+
     /**
-     * Generate the full SVG plant based on state
+     * Generate pot pattern SVG elements
      */
-    function generateSVG(state) {
+    function generatePatternSVG(pattern, potColor) {
+        const pc = POT_COLORS[potColor] || POT_COLORS.terracotta;
+        const patternColor = pc.highlight + '44'; // semi-transparent
+
+        switch (pattern) {
+            case 'stripes':
+                return `
+                    <line x1="80" y1="205" x2="80" y2="245" stroke="${patternColor}" stroke-width="3" opacity="0.5"/>
+                    <line x1="95" y1="202" x2="93" y2="248" stroke="${patternColor}" stroke-width="3" opacity="0.5"/>
+                    <line x1="110" y1="200" x2="110" y2="250" stroke="${patternColor}" stroke-width="3" opacity="0.5"/>
+                    <line x1="125" y1="202" x2="127" y2="248" stroke="${patternColor}" stroke-width="3" opacity="0.5"/>
+                    <line x1="140" y1="205" x2="140" y2="245" stroke="${patternColor}" stroke-width="3" opacity="0.5"/>
+                `;
+            case 'dots':
+                return `
+                    <circle cx="85" cy="215" r="3" fill="${patternColor}" opacity="0.6"/>
+                    <circle cx="105" cy="210" r="3" fill="${patternColor}" opacity="0.6"/>
+                    <circle cx="125" cy="215" r="3" fill="${patternColor}" opacity="0.6"/>
+                    <circle cx="95" cy="235" r="3" fill="${patternColor}" opacity="0.6"/>
+                    <circle cx="115" cy="230" r="3" fill="${patternColor}" opacity="0.6"/>
+                    <circle cx="135" cy="235" r="3" fill="${patternColor}" opacity="0.6"/>
+                `;
+            case 'hearts':
+                return `
+                    <text x="90" y="220" font-size="10" opacity="0.4" fill="${pc.highlight}">♥</text>
+                    <text x="110" y="215" font-size="12" opacity="0.4" fill="${pc.highlight}">♥</text>
+                    <text x="130" y="220" font-size="10" opacity="0.4" fill="${pc.highlight}">♥</text>
+                    <text x="100" y="240" font-size="8" opacity="0.3" fill="${pc.highlight}">♥</text>
+                    <text x="120" y="238" font-size="8" opacity="0.3" fill="${pc.highlight}">♥</text>
+                `;
+            case 'zigzag':
+                return `
+                    <polyline points="75,220 85,210 95,220 105,210 115,220 125,210 135,220 145,210"
+                        stroke="${patternColor}" stroke-width="2" fill="none" opacity="0.5"/>
+                    <polyline points="77,240 87,230 97,240 107,230 117,240 127,230 137,240 147,230"
+                        stroke="${patternColor}" stroke-width="2" fill="none" opacity="0.4"/>
+                `;
+            case 'stars':
+                return `
+                    <text x="85" y="218" font-size="9" opacity="0.4" fill="${pc.highlight}">★</text>
+                    <text x="110" y="213" font-size="11" opacity="0.4" fill="${pc.highlight}">★</text>
+                    <text x="133" y="218" font-size="9" opacity="0.4" fill="${pc.highlight}">★</text>
+                    <text x="97" y="240" font-size="7" opacity="0.3" fill="${pc.highlight}">★</text>
+                    <text x="122" y="237" font-size="7" opacity="0.3" fill="${pc.highlight}">★</text>
+                `;
+            default:
+                return '';
+        }
+    }
+
+    /**
+     * Generate accessory SVG elements
+     */
+    function generateAccessorySVG(accessory) {
+        switch (accessory) {
+            case 'bow':
+                return `
+                    <g transform="translate(110, 185)">
+                        <path d="M-12,-3 Q-8,-10 -2,-3" fill="#e74c3c" stroke="#c0392b" stroke-width="0.8"/>
+                        <path d="M2,-3 Q8,-10 12,-3" fill="#e74c3c" stroke="#c0392b" stroke-width="0.8"/>
+                        <circle cx="0" cy="-3" r="2.5" fill="#c0392b"/>
+                        <path d="M-2,0 Q0,4 2,0" fill="#e74c3c" opacity="0.7"/>
+                    </g>
+                `;
+            case 'sunglasses':
+                return `
+                    <g transform="translate(110, 117)">
+                        <rect x="-22" y="-5" width="16" height="11" rx="3" fill="rgba(0,0,0,0.8)" stroke="#333" stroke-width="0.8"/>
+                        <rect x="6" y="-5" width="16" height="11" rx="3" fill="rgba(0,0,0,0.8)" stroke="#333" stroke-width="0.8"/>
+                        <line x1="-6" y1="0" x2="6" y2="0" stroke="#333" stroke-width="1.5"/>
+                        <line x1="-22" y1="-2" x2="-28" y2="-4" stroke="#333" stroke-width="1.5"/>
+                        <line x1="22" y1="-2" x2="28" y2="-4" stroke="#333" stroke-width="1.5"/>
+                        <!-- Shine -->
+                        <rect x="-20" y="-3" width="5" height="2" rx="1" fill="rgba(255,255,255,0.15)"/>
+                        <rect x="8" y="-3" width="5" height="2" rx="1" fill="rgba(255,255,255,0.15)"/>
+                    </g>
+                `;
+            case 'hat':
+                return `
+                    <g transform="translate(110, 52)">
+                        <!-- Hat brim -->
+                        <ellipse cx="0" cy="12" rx="28" ry="5" fill="#2c3e50"/>
+                        <!-- Hat crown -->
+                        <rect x="-16" y="-12" width="32" height="24" rx="3" fill="#34495e"/>
+                        <!-- Hat band -->
+                        <rect x="-16" y="4" width="32" height="5" fill="#e74c3c"/>
+                        <!-- Hat shine -->
+                        <rect x="-12" y="-8" width="4" height="16" rx="2" fill="rgba(255,255,255,0.08)"/>
+                    </g>
+                `;
+            case 'crown':
+                return `
+                    <g transform="translate(110, 48)">
+                        <path d="M-18,8 L-18,-4 L-10,-1 L0,-10 L10,-1 L18,-4 L18,8 Z" fill="#f1c40f" stroke="#d4ac0d" stroke-width="1"/>
+                        <!-- Gems -->
+                        <circle cx="0" cy="1" r="2.5" fill="#e74c3c"/>
+                        <circle cx="-10" cy="3" r="2" fill="#3498db"/>
+                        <circle cx="10" cy="3" r="2" fill="#2ecc71"/>
+                        <!-- Crown shine -->
+                        <path d="M-14,6 L-14,-2 L-10,0" fill="rgba(255,255,255,0.15)"/>
+                    </g>
+                `;
+            case 'scarf':
+                return `
+                    <g transform="translate(110, 183)">
+                        <path d="M-48,0 Q-20,-8 0,-2 Q20,-8 48,0 Q20,6 0,3 Q-20,6 -48,0Z" fill="#e74c3c" opacity="0.9"/>
+                        <path d="M-48,0 Q-20,-8 0,-2 Q20,-8 48,0 Q20,6 0,3 Q-20,6 -48,0Z" stroke="#c0392b" stroke-width="0.5" fill="none"/>
+                        <!-- Scarf stripe -->
+                        <path d="M-40,0 Q-15,-6 0,-1 Q15,-6 40,0" stroke="#f5b7b1" stroke-width="1.5" fill="none" opacity="0.5"/>
+                        <!-- Hanging ends -->
+                        <path d="M15,2 Q18,12 14,20" stroke="#e74c3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+                        <path d="M18,2 Q22,14 19,22" stroke="#c0392b" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.5"/>
+                    </g>
+                `;
+            case 'flower_deco':
+                return `
+                    <g transform="translate(152, 192)">
+                        <ellipse cx="0" cy="-6" rx="3" ry="5" fill="#ff69b4" opacity="0.9"/>
+                        <ellipse cx="5" cy="-2" rx="3" ry="5" fill="#ff69b4" opacity="0.85" transform="rotate(72)"/>
+                        <ellipse cx="3" cy="4" rx="3" ry="5" fill="#ff69b4" opacity="0.9" transform="rotate(144)"/>
+                        <ellipse cx="-3" cy="4" rx="3" ry="5" fill="#ff69b4" opacity="0.85" transform="rotate(216)"/>
+                        <ellipse cx="-5" cy="-2" rx="3" ry="5" fill="#ff69b4" opacity="0.9" transform="rotate(288)"/>
+                        <circle cx="0" cy="0" r="3.5" fill="#ff1493"/>
+                    </g>
+                `;
+            default:
+                return '';
+        }
+    }
+
+    /**
+     * Generate the full SVG plant based on state and customization
+     */
+    function generateSVG(state, customOpts) {
         const p = PALETTES[state] || PALETTES.healthy;
+        const custom = customOpts || currentCustom;
+        const pc = POT_COLORS[custom.potColor] || POT_COLORS.terracotta;
         const isHealthy = state === 'healthy';
         const isSad = state === 'sad';
         const isCritical = state === 'critical';
@@ -158,7 +333,6 @@ const PlantAvatar = (function () {
         // Small flower on top (only healthy)
         const flower = isHealthy ? `
             <g transform="translate(110, 48)">
-                <!-- Petals -->
                 <ellipse cx="0" cy="-8" rx="4" ry="7" fill="${p.flower}" opacity="0.9">
                     <animateTransform attributeName="transform" type="rotate" values="0,0,-8;5,0,-8;0,0,-8" dur="4s" repeatCount="indefinite"/>
                 </ellipse>
@@ -174,14 +348,12 @@ const PlantAvatar = (function () {
                 <ellipse cx="-7" cy="-3" rx="4" ry="7" fill="${p.flower}" opacity="0.9" transform="rotate(288)">
                     <animateTransform attributeName="transform" type="rotate" values="288,0,0;293,0,0;288,0,0" dur="4s" repeatCount="indefinite" begin="0.8s"/>
                 </ellipse>
-                <!-- Center -->
                 <circle cx="0" cy="0" r="5" fill="${p.flowerCenter}"/>
             </g>
         ` : '';
 
         // Wilted leaves (only critical)
         const wiltedDetails = isCritical ? `
-            <!-- Fallen leaf on ground -->
             <g transform="translate(62, 218) rotate(45)">
                 <ellipse cx="0" cy="0" rx="10" ry="5" fill="${p.leaf}" opacity="0.4"/>
             </g>
@@ -190,14 +362,20 @@ const PlantAvatar = (function () {
             </g>
         ` : '';
 
+        // Pot pattern
+        const patternSVG = generatePatternSVG(custom.potPattern, custom.potColor);
+
+        // Accessory
+        const accessorySVG = generateAccessorySVG(custom.accessory);
+
         return `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 280" width="220" height="280">
             <defs>
                 <!-- Pot gradient -->
                 <linearGradient id="potGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="${p.potHighlight}" />
-                    <stop offset="50%" stop-color="${p.pot}" />
-                    <stop offset="100%" stop-color="${p.potDark}" />
+                    <stop offset="0%" stop-color="${pc.highlight}" />
+                    <stop offset="50%" stop-color="${pc.main}" />
+                    <stop offset="100%" stop-color="${pc.dark}" />
                 </linearGradient>
                 <!-- Leaf gradient -->
                 <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -225,6 +403,8 @@ const PlantAvatar = (function () {
                 <path d="M72 250 Q72 256 78 256 L142 256 Q148 256 148 250 L152 197 L148 197 L145 248 Q145 252 140 252 L80 252 Q75 252 75 248 L72 197 L68 197 Z" fill="rgba(0,0,0,0.15)"/>
                 <!-- Pot shine -->
                 <rect x="75" y="200" width="6" height="40" rx="3" fill="rgba(255,255,255,0.08)"/>
+                <!-- Pot Pattern -->
+                ${patternSVG}
                 <!-- Soil -->
                 <ellipse cx="110" cy="192" rx="44" ry="8" fill="url(#soilGrad)" />
                 <!-- Soil texture dots -->
@@ -243,51 +423,42 @@ const PlantAvatar = (function () {
                                 M110 188 Q108 160 110 140 Q112 120 110 100 Q109 85 110 70"
                         dur="5s" repeatCount="indefinite"/>` : ''}
                 </path>
-                <!-- Stem vein -->
                 <path d="M110 188 Q108 160 110 140 Q112 120 110 100 Q109 85 110 70"
-                      stroke="${p.stemVein || 'rgba(255,255,255,0.08)'}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                      stroke="rgba(255,255,255,0.08)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
             </g>
 
             <!-- LEAVES -->
-            <!-- Left leaf cluster -->
             <g transform="translate(110, 100) rotate(${leftLeafRotate})">
                 <ellipse cx="-35" cy="-10" rx="30" ry="12" fill="url(#leafGrad)" opacity="0.95">
                     ${isHealthy ? `<animateTransform attributeName="transform" type="rotate" values="0,-35,-10;-3,-35,-10;0,-35,-10" dur="4s" repeatCount="indefinite"/>` : ''}
                 </ellipse>
-                <!-- Leaf vein -->
                 <line x1="-10" y1="-10" x2="-58" y2="-10" stroke="${p.leafDark}" stroke-width="1" opacity="0.4"/>
                 <line x1="-25" y1="-10" x2="-32" y2="-18" stroke="${p.leafDark}" stroke-width="0.7" opacity="0.3"/>
                 <line x1="-35" y1="-10" x2="-42" y2="-4" stroke="${p.leafDark}" stroke-width="0.7" opacity="0.3"/>
             </g>
 
-            <!-- Right leaf cluster -->
             <g transform="translate(110, 110) rotate(${rightLeafRotate})">
                 <ellipse cx="35" cy="-8" rx="30" ry="11" fill="url(#leafGrad)" opacity="0.9">
                     ${isHealthy ? `<animateTransform attributeName="transform" type="rotate" values="0,35,-8;3,35,-8;0,35,-8" dur="4.5s" repeatCount="indefinite" begin="0.5s"/>` : ''}
                 </ellipse>
-                <!-- Leaf vein -->
                 <line x1="10" y1="-8" x2="58" y2="-8" stroke="${p.leafDark}" stroke-width="1" opacity="0.4"/>
                 <line x1="28" y1="-8" x2="35" y2="-16" stroke="${p.leafDark}" stroke-width="0.7" opacity="0.3"/>
                 <line x1="42" y1="-8" x2="48" y2="-2" stroke="${p.leafDark}" stroke-width="0.7" opacity="0.3"/>
             </g>
 
-            <!-- Top leaf -->
             <g transform="translate(110, 75) rotate(${topLeafRotate})">
                 <ellipse cx="0" cy="-18" rx="14" ry="24" fill="url(#leafGrad)" opacity="0.95">
                     ${isHealthy ? `<animateTransform attributeName="transform" type="rotate" values="0,0,-18;2,0,-18;0,0,-18;-2,0,-18;0,0,-18" dur="5s" repeatCount="indefinite" begin="0.3s"/>` : ''}
                 </ellipse>
-                <!-- Leaf vein -->
                 <line x1="0" y1="0" x2="0" y2="-38" stroke="${p.leafDark}" stroke-width="1" opacity="0.4"/>
             </g>
 
-            <!-- Small left lower leaf -->
             <g transform="translate(110, 145) rotate(${leftLeafRotate - 10})">
                 <ellipse cx="-22" cy="-5" rx="20" ry="8" fill="url(#leafGrad)" opacity="0.85">
                     ${isHealthy ? `<animateTransform attributeName="transform" type="rotate" values="0,-22,-5;-2,-22,-5;0,-22,-5" dur="3.5s" repeatCount="indefinite" begin="1s"/>` : ''}
                 </ellipse>
             </g>
 
-            <!-- Small right lower leaf -->
             <g transform="translate(110, 135) rotate(${rightLeafRotate + 8})">
                 <ellipse cx="24" cy="-5" rx="22" ry="9" fill="url(#leafGrad)" opacity="0.88">
                     ${isHealthy ? `<animateTransform attributeName="transform" type="rotate" values="0,24,-5;2,24,-5;0,24,-5" dur="3.8s" repeatCount="indefinite" begin="0.7s"/>` : ''}
@@ -301,6 +472,9 @@ const PlantAvatar = (function () {
                 ${faceExpression}
             </g>
 
+            <!-- ACCESSORY -->
+            ${accessorySVG}
+
         </svg>
         `;
     }
@@ -308,11 +482,11 @@ const PlantAvatar = (function () {
     /**
      * Render the SVG into the container
      */
-    function render(state) {
+    function render(state, customOpts) {
         const container = document.getElementById('plant-svg-container');
         if (!container) return;
 
-        container.innerHTML = generateSVG(state);
+        container.innerHTML = generateSVG(state, customOpts);
 
         // Apply animation class
         container.classList.remove('healthy', 'sad', 'critical');
@@ -331,6 +505,11 @@ const PlantAvatar = (function () {
         render,
         generateSVG,
         PALETTES,
+        POT_COLORS,
+        POT_PATTERNS,
+        POT_ACCESSORIES,
+        setCustomization,
+        getCustomization,
     };
 
 })();
