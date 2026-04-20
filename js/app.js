@@ -429,11 +429,22 @@
 
     function handlePlantTypeChange(type) {
         PlantAvatar.setCustomization({ plantType: type });
+        const info = PlantAvatar.PLANT_TYPES[type];
+        
+        // Update Config and Top UI
+        PlantData.CONFIG.plantName = info.label;
+        PlantData.CONFIG.plantSpecies = info.scientific || '';
+        
+        if (DOM.plantName) DOM.plantName.textContent = info.label;
+        if (DOM.plantSpecies) DOM.plantSpecies.textContent = info.scientific || '';
+        if (DOM.settingPlantName) DOM.settingPlantName.value = info.label;
+        if (DOM.settingPlantSpecies) DOM.settingPlantSpecies.value = info.scientific || '';
+
         renderPlantTypePicker();
         updateCustomizePreview();
         PlantAvatar.render(PlantData.plantState);
+        renderAIPage(); // Update AI page with new species info
         saveState();
-        const info = PlantAvatar.PLANT_TYPES[type];
         showToast(`${info.emoji} ${info.label} selecionada!`, 'success');
     }
 
